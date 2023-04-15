@@ -30,22 +30,19 @@ const App: React.FC = () => {
     const [instructions, setInstructions] = useState<JSX.Element[]>();
 
     useEffect(() => {
-        if (baseTimers) {
+        if (baseTimers && baseTimers[0]) {
             const elements = [
                 <span className="instruction">
-                    {`${baseTimers[0].timeName} goes in first for ${
-                        baseTimers[0].timeLength
-                    } ${minuteWording(baseTimers[0].timeLength)}`}
+                    {`${baseTimers[0].timeName} goes in first for ${baseTimers[0].timeLength
+                        } ${minuteWording(baseTimers[0].timeLength)}`}
                 </span>,
             ];
             for (let i = 1; i < baseTimers.length; i++) {
                 elements.push(
                     <span className="instruction">
-                        {`${baseTimers[i].timeName} starts ${
-                            baseTimers[i].timeAfter
-                        } ${minuteWording(baseTimers[i].timeAfter)} after ${
-                            baseTimers[i - 1].timeName
-                        } and goes in for ${baseTimers[i].timeLength}`}
+                        {`${baseTimers[i].timeName} starts ${baseTimers[i].timeAfter
+                            } ${minuteWording(baseTimers[i].timeAfter)} after ${baseTimers[i - 1].timeName
+                            } and goes in for ${baseTimers[i].timeLength}`}
                     </span>
                 );
             }
@@ -67,7 +64,7 @@ const App: React.FC = () => {
             for (let i = 1; i < formattedTimers.length; i++) {
                 formattedTimers[i].timeAfter = Math.abs(
                     formattedTimers[i].timeLength -
-                        formattedTimers[i - 1].timeLength
+                    formattedTimers[i - 1].timeLength
                 );
             }
         }
@@ -81,7 +78,7 @@ const App: React.FC = () => {
                     <Form>
                         <FieldArray name="timers">
                             {({ remove, push }) => (
-                                <div className="flex-row">
+                                <div className="flex">
                                     <div className="container border">
                                         {values.timers.length > 0 &&
                                             values.timers.map(
@@ -94,7 +91,7 @@ const App: React.FC = () => {
                                                             className="item"
                                                             htmlFor={`timers.${index}.timeName`}
                                                         >
-                                                            Timer {index + 1}
+                                                            {index + 1}
                                                         </label>
                                                         <Field
                                                             className="item border"
@@ -102,7 +99,7 @@ const App: React.FC = () => {
                                                             type="text"
                                                         />
                                                         <Field
-                                                            className="item border"
+                                                            className="item border number"
                                                             name={`timers.${index}.timeLength`}
                                                             type="number"
                                                             min="0"
@@ -118,15 +115,19 @@ const App: React.FC = () => {
                                                                     index === 0
                                                                         ? "hidden"
                                                                         : undefined,
+                                                                height:
+                                                                    index === 0
+                                                                        ? 0
+                                                                        : undefined,
                                                             }}
                                                         >
-                                                            Remove
+                                                            Clear
                                                         </button>
                                                     </div>
                                                 )
                                             )}
                                     </div>
-                                    <div className="container flex-row border">
+                                    <div className="container flex border button-group">
                                         <button
                                             type="button"
                                             className="item"

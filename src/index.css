@@ -18,28 +18,25 @@ body {
     width: max-content;
     padding: 1em;
     margin: 1em;
-    justify-content: space-between;
 }
 
 .grid {
     display: grid;
-    /* grid-template-columns: 4em auto 8em auto; */
     grid-template-columns: repeat(4, auto);
-    /* grid-template-columns: 4em auto 8em auto; */
     min-width: max-content;
     margin-bottom: auto;
     margin: 0.5em;
+
 }
-/* .grid >.item {
-  margin-left: 1em;
-  } */
-.flex-row {
+
+.flex {
     display: flex;
     flex-direction: row;
     min-width: max-content;
     max-width: max-content;
     margin-bottom: auto;
 }
+
 .item {
     align-self: center;
 }
@@ -48,7 +45,7 @@ body {
     margin-left: 1em;
 }
 
-.flex-row > .item:first-child {
+.flex>.item:first-child {
     margin-right: 0.2em;
 }
 
@@ -60,15 +57,21 @@ body {
 .instruction:first-letter {
     text-transform: capitalize;
 }
+
 input {
     padding: 0.5em;
     background-color: #f8fff8;
     font-size: 1em;
 }
+
+img {
+    width: 2em
+}
+
+
 button {
     height: min-content;
     background-color: #0050b6;
-    /* border: 2px solid #002f8d; */
     border: 0;
     border-radius: 1em;
     padding: 0.75em;
@@ -86,8 +89,32 @@ button:active {
     .grid {
         grid-template-columns: repeat(1, 1fr);
     }
-    .grid > .item {
+
+    .grid>.item {
         align-self: center;
         margin: 0.25em 0;
     }
+
+    .button-group {
+        display: flex;
+        flex-direction: column;
+        max-height: min-content;
+    }
+
+    .flex>.item {
+        align-self: center;
+        margin: 0.25em 0;
+    }
+}
+
+@media screen and (max-width: 450px) {
+    .flex>.item {
+        margin: 0.25em 0;
+    }
+
+    input {
+        width: 6em;
+    }
+
+
 }
