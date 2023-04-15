@@ -92,7 +92,7 @@ const App: React.FC = () => {
                                                     >
                                                         <label
                                                             className="item"
-                                                            htmlFor={`timers.${index}timeName`}
+                                                            htmlFor={`timers.${index}.timeName`}
                                                         >
                                                             Timer {index + 1}
                                                         </label>
