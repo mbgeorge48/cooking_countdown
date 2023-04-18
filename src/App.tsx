@@ -1,8 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { Formik, Field, Form, FieldArray } from "formik";
 
-import "./App.css";
-
 interface Timer {
     timeName: string;
     timeLength: number;
@@ -60,7 +58,6 @@ const App: React.FC = () => {
             })
             .reverse();
         if (formattedTimers.length > 1) {
-            console.log({ formattedTimers });
             for (let i = 1; i < formattedTimers.length; i++) {
                 formattedTimers[i].timeAfter = Math.abs(
                     formattedTimers[i].timeLength -
@@ -73,13 +70,15 @@ const App: React.FC = () => {
 
     return (
         <div className="App">
-            <Formik initialValues={initialValues} onSubmit={handleSubmit}>
-                {({ values }) => (
-                    <Form>
-                        <FieldArray name="timers">
-                            {({ remove, push }) => (
-                                <div className="flex">
-                                    <div className="container border">
+            <div className="container border">
+                <h1>Cooking Timers</h1>
+                <p>Simply enter the food item and the time it takes to cook, add as many timers as you like.<br />Hit go when you're ready!</p>
+                <Formik initialValues={initialValues} onSubmit={handleSubmit}>
+                    {({ values }) => (
+                        <Form>
+                            <FieldArray name="timers">
+                                {({ remove, push }) => (
+                                    <div>
                                         {values.timers.length > 0 &&
                                             values.timers.map(
                                                 (timer, index) => (
@@ -87,23 +86,25 @@ const App: React.FC = () => {
                                                         className="grid"
                                                         key={index}
                                                     >
-                                                        <label
-                                                            className="item"
-                                                            htmlFor={`timers.${index}.timeName`}
-                                                        >
-                                                            {index + 1}
-                                                        </label>
-                                                        <Field
-                                                            className="item border"
-                                                            name={`timers.${index}.timeName`}
-                                                            type="text"
-                                                        />
-                                                        <Field
-                                                            className="item border number"
-                                                            name={`timers.${index}.timeLength`}
-                                                            type="number"
-                                                            min="0"
-                                                        />
+                                                        <div className="field">
+                                                            <Field
+                                                                className="item border"
+                                                                name={`timers.${index}.timeName`}
+                                                                id={`timers.${index}.timeName`}
+                                                                type="text"
+                                                                placeholder="Pizza"
+                                                            />
+                                                            <label htmlFor={`timers.${index}.timeName`}>Food Item</label>
+                                                        </div>
+                                                        <div className="field">
+                                                            <Field
+                                                                className="item border number"
+                                                                name={`timers.${index}.timeLength`}
+                                                                id={`timers.${index}.timeLength`}
+                                                                type="number"
+                                                            />
+                                                            <label htmlFor={`timers.${index}.timeLength`}>Cooking Time</label>
+                                                        </div>
                                                         <button
                                                             className="item"
                                                             type="button"
@@ -115,10 +116,6 @@ const App: React.FC = () => {
                                                                     index === 0
                                                                         ? "hidden"
                                                                         : undefined,
-                                                                height:
-                                                                    index === 0
-                                                                        ? 0
-                                                                        : undefined,
                                                             }}
                                                         >
                                                             Clear
@@ -126,8 +123,7 @@ const App: React.FC = () => {
                                                     </div>
                                                 )
                                             )}
-                                    </div>
-                                    <div className="container flex border button-group">
+
                                         <button
                                             type="button"
                                             className="item"
@@ -145,12 +141,12 @@ const App: React.FC = () => {
                                             Go!
                                         </button>
                                     </div>
-                                </div>
-                            )}
-                        </FieldArray>
-                    </Form>
-                )}
-            </Formik>
+                                )}
+                            </FieldArray>
+                        </Form>
+                    )}
+                </Formik>
+            </div>
             {instructions && instructions.length > 0 ? (
                 <div className="container border">
                     <ol type="1">
