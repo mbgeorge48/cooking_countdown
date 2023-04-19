@@ -13,7 +13,6 @@ body {
 }
 
 
-
 .container {
     width: max-content;
     padding: 1em;
@@ -29,7 +28,6 @@ body {
     min-width: max-content;
     margin-bottom: auto;
     margin: 0.5em;
-
 }
 
 
@@ -57,6 +55,7 @@ input {
     padding: 0.5em;
     font-size: 1em;
     background-color: #d89e80;
+    border-bottom: 1px solid #cc550080;
     border-width: 0 0 1px 0;
     border-color: #cc550080;
     color: #cc5500;
@@ -92,7 +91,7 @@ button:active {
     background-color: transparent;
     color: #cc5500;
     box-shadow: inset 0 0 0 2px #cc5500;
-    transition: all 0.1s linear;
+    transition: all 0.1s ease-in-out;
 }
 
 
@@ -100,17 +99,20 @@ button:active {
 @media screen and (max-width: 900px) {
     .grid {
         grid-template-columns: repeat(1, 1fr);
+        place-items: center;
+        border-bottom: 1px solid #cc550080;
+
     }
 
     .grid>.item {
         align-self: center;
-        margin: 0.25em 0;
+        width: 90%;
+        margin: 0.5em 0;
     }
 
-    .button-group {
-        display: flex;
-        flex-direction: column;
-        max-height: min-content;
+    .grid>.field {
+        width: 90%;
+        margin: 0.5em 0;
     }
 
     .flex>.item {
@@ -119,7 +121,14 @@ button:active {
     }
 }
 
-@media screen and (max-width: 450px) {
+@media screen and (max-width: 600px) {
+    .container {
+        border: 0;
+        margin: 0;
+        border-radius: 0;
+        padding: 2em;
+    }
+
     .flex>.item {
         margin: 0.25em 0;
     }
