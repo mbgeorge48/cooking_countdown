@@ -31,18 +31,25 @@ const App: React.FC = () => {
         if (baseTimers && baseTimers[0]) {
             const elements = [
                 <span className="instruction">
-                    {`${baseTimers[0].timeName} goes in first for ${baseTimers[0].timeLength
-                        } ${minuteWording(baseTimers[0].timeLength)}`}
+                    <strong>{baseTimers[0].timeName}</strong> goes in first for <strong>{baseTimers[0].timeLength} {minuteWording(baseTimers[0].timeLength)}</strong>
                 </span>,
             ];
             for (let i = 1; i < baseTimers.length; i++) {
-                elements.push(
-                    <span className="instruction">
-                        {`${baseTimers[i].timeName} starts ${baseTimers[i].timeAfter
-                            } ${minuteWording(baseTimers[i].timeAfter)} after ${baseTimers[i - 1].timeName
-                            } and goes in for ${baseTimers[i].timeLength}`}
-                    </span>
-                );
+                if (baseTimers[i].timeAfter > 0) {
+                    elements.push(
+                        <span className="instruction">
+                            <strong>{baseTimers[i].timeName}</strong> starts <strong>{baseTimers[i].timeAfter}{' '}
+                                {minuteWording(baseTimers[i].timeAfter)}</strong> after {baseTimers[i - 1].timeName
+                            } and goes in for <strong>{baseTimers[i].timeLength} {minuteWording(baseTimers[i].timeLength)}</strong>
+                        </span>)
+                } else {
+                    elements.push(
+                        <span className="instruction">
+                            <strong>{baseTimers[i].timeName}</strong> starts at the <strong>same time</strong> as <strong>{baseTimers[i - 1].timeName}
+                            </strong>
+                        </span>
+                    );
+                }
             }
             setInstructions(elements);
         }
@@ -69,7 +76,7 @@ const App: React.FC = () => {
     }, []);
 
     return (
-        <div className="App">
+        <>
             <div className="container border">
                 <h1>Cooking Timers</h1>
                 <p>Simply enter the food item and the time it takes to cook, add as many timers as you like.<br />Hit go when you're ready!</p>
@@ -156,7 +163,7 @@ const App: React.FC = () => {
                     </ol>
                 </div>
             ) : undefined}
-        </div>
+        </>
     );
 };
 
