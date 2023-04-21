@@ -12,7 +12,6 @@ body {
     justify-content: center;
 }
 
-
 .container {
     width: max-content;
     padding: 1em;
@@ -73,7 +72,6 @@ input:focus {
     transition: color 0.1s ease-in-out;
 }
 
-
 button {
     height: min-content;
     font-family: inherit;
@@ -84,6 +82,7 @@ button {
     color: white;
     cursor: pointer;
     margin: 1em;
+    font-size: 1rem;
 }
 
 button:hover,
@@ -94,14 +93,10 @@ button:active {
     transition: all 0.1s ease-in-out;
 }
 
-
-
 @media screen and (max-width: 900px) {
     .grid {
         grid-template-columns: repeat(1, 1fr);
         place-items: center;
-        border-bottom: 1px solid #cc550080;
-
     }
 
     .grid>.item {
@@ -119,6 +114,10 @@ button:active {
         align-self: center;
         margin: 0.25em 0;
     }
+
+    .container {
+        width: auto;
+    }
 }
 
 @media screen and (max-width: 600px) {
@@ -127,15 +126,14 @@ button:active {
         margin: 0;
         border-radius: 0;
         padding: 2em;
+        border-bottom: 1px solid #cc550080;
     }
 
     .flex>.item {
         margin: 0.25em 0;
     }
 
-    input {
-        width: 6em;
+    body {
+        background-color: #d89e80;
     }
-
-
 }
