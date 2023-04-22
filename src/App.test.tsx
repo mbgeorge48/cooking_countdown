@@ -84,6 +84,27 @@ describe("<App />", () => {
         );
     });
 
+    test("renders single instruction when only one set is populated", async () => {
+        render(<App />);
+
+        const timerNameFields = screen.getAllByRole("textbox");
+        const timerLengthFields = screen.getAllByRole("spinbutton");
+
+        fireEvent.change(timerNameFields[0], { target: { value: "Food A" } });
+        fireEvent.change(timerLengthFields[0], { target: { value: 10 } });
+
+        fireEvent.click(screen.getByText(/go!/i));
+
+        await waitFor(() => {
+            expect(screen.getAllByRole("listitem")).toHaveLength(1);
+        });
+        const listItems = screen.getAllByRole("listitem");
+
+        expect(listItems[0]).toHaveTextContent(
+            /Food A goes in first for 10 minutes/i
+        );
+    });
+
     test("renders minute or minutes correctly", async () => {
         render(<App />);
 
