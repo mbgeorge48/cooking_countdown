@@ -8,7 +8,7 @@ describe("<App />", () => {
         expect(screen.getByText(/Cooking Timers/i)).toBeInTheDocument();
         const buttons = screen.getAllByRole("button");
 
-        expect(buttons).toHaveLength(2);
+        expect(buttons).toHaveLength(3);
         expect(buttons[0]).toHaveTextContent(/add timer/i);
         expect(buttons[1]).toHaveTextContent(/go!/i);
 

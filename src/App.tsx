@@ -31,22 +31,35 @@ const App: React.FC = () => {
         if (baseTimers && baseTimers[0]) {
             const elements = [
                 <span className="instruction">
-                    <strong>{baseTimers[0].timeName}</strong> goes in first for <strong>{baseTimers[0].timeLength} {minuteWording(baseTimers[0].timeLength)}</strong>
+                    <strong>{baseTimers[0].timeName}</strong> goes in first for{" "}
+                    <strong>
+                        {baseTimers[0].timeLength}{" "}
+                        {minuteWording(baseTimers[0].timeLength)}
+                    </strong>
                 </span>,
             ];
             for (let i = 1; i < baseTimers.length; i++) {
                 if (baseTimers[i].timeAfter > 0) {
                     elements.push(
                         <span className="instruction">
-                            <strong>{baseTimers[i].timeName}</strong> starts <strong>{baseTimers[i].timeAfter}{' '}
-                                {minuteWording(baseTimers[i].timeAfter)}</strong> after {baseTimers[i - 1].timeName
-                            } and goes in for <strong>{baseTimers[i].timeLength} {minuteWording(baseTimers[i].timeLength)}</strong>
-                        </span>)
+                            <strong>{baseTimers[i].timeName}</strong> starts{" "}
+                            <strong>
+                                {baseTimers[i].timeAfter}{" "}
+                                {minuteWording(baseTimers[i].timeAfter)}
+                            </strong>{" "}
+                            after {baseTimers[i - 1].timeName} and goes in for{" "}
+                            <strong>
+                                {baseTimers[i].timeLength}{" "}
+                                {minuteWording(baseTimers[i].timeLength)}
+                            </strong>
+                        </span>
+                    );
                 } else {
                     elements.push(
                         <span className="instruction">
-                            <strong>{baseTimers[i].timeName}</strong> starts at the <strong>same time</strong> as <strong>{baseTimers[i - 1].timeName}
-                            </strong>
+                            <strong>{baseTimers[i].timeName}</strong> starts at
+                            the <strong>same time</strong> as{" "}
+                            <strong>{baseTimers[i - 1].timeName}</strong>
                         </span>
                     );
                 }
@@ -68,7 +81,7 @@ const App: React.FC = () => {
             for (let i = 1; i < formattedTimers.length; i++) {
                 formattedTimers[i].timeAfter = Math.abs(
                     formattedTimers[i].timeLength -
-                    formattedTimers[i - 1].timeLength
+                        formattedTimers[i - 1].timeLength
                 );
             }
         }
@@ -79,7 +92,12 @@ const App: React.FC = () => {
         <>
             <div className="container border">
                 <h1>Cooking Timers</h1>
-                <p>Simply enter the food item and the time it takes to cook, add as many timers as you like.<br />Hit go when you're ready!</p>
+                <p>
+                    Simply enter the food item and the time it takes to cook,
+                    add as many timers as you like.
+                    <br />
+                    Hit go when you're ready!
+                </p>
                 <Formik initialValues={initialValues} onSubmit={handleSubmit}>
                     {({ values }) => (
                         <Form>
@@ -99,9 +117,12 @@ const App: React.FC = () => {
                                                                 name={`timers.${index}.timeName`}
                                                                 id={`timers.${index}.timeName`}
                                                                 type="text"
-                                                                placeholder="Pizza"
                                                             />
-                                                            <label htmlFor={`timers.${index}.timeName`}>Food Item</label>
+                                                            <label
+                                                                htmlFor={`timers.${index}.timeName`}
+                                                            >
+                                                                Food Item
+                                                            </label>
                                                         </div>
                                                         <div className="field">
                                                             <Field
@@ -110,20 +131,21 @@ const App: React.FC = () => {
                                                                 id={`timers.${index}.timeLength`}
                                                                 type="number"
                                                             />
-                                                            <label htmlFor={`timers.${index}.timeLength`}>Cooking Time</label>
+                                                            <label
+                                                                htmlFor={`timers.${index}.timeLength`}
+                                                            >
+                                                                Cooking Time
+                                                            </label>
                                                         </div>
                                                         <button
-                                                            className="item"
+                                                            className={`item ${
+                                                                index === 0 &&
+                                                                "initial-clear-button"
+                                                            }`}
                                                             type="button"
                                                             onClick={() =>
                                                                 remove(index)
                                                             }
-                                                            style={{
-                                                                visibility:
-                                                                    index === 0
-                                                                        ? "hidden"
-                                                                        : undefined,
-                                                            }}
                                                         >
                                                             Clear
                                                         </button>

@@ -1,12 +1,12 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@400;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@400;700&display=swap");
 
 body {
     margin: 0;
     font-family: "Roboto Condensed";
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    background-color: #36454F;
-    color: #36454F;
+    background-color: #36454f;
+    color: #36454f;
     font-size: 1em;
     display: flex;
     justify-content: center;
@@ -28,7 +28,6 @@ body {
     margin-bottom: auto;
     margin: 0.5em;
 }
-
 
 .instruction {
     display: block;
@@ -63,12 +62,11 @@ input {
     -moz-appearance: textfield;
     outline: none;
     font-weight: bold;
-    outline: none;
 }
 
 input:active,
 input:focus {
-    color: #36454F;
+    color: #36454f;
     transition: color 0.1s ease-in-out;
 }
 
@@ -93,30 +91,39 @@ button:active {
     transition: all 0.1s ease-in-out;
 }
 
+.initial-clear-button {
+    display: block;
+    visibility: hidden;
+}
+
 @media screen and (max-width: 900px) {
     .grid {
         grid-template-columns: repeat(1, 1fr);
         place-items: center;
     }
 
-    .grid>.item {
+    .grid > .item {
         align-self: center;
         width: 90%;
         margin: 0.5em 0;
     }
 
-    .grid>.field {
+    .grid > .field {
         width: 90%;
         margin: 0.5em 0;
     }
 
-    .flex>.item {
+    .flex > .item {
         align-self: center;
         margin: 0.25em 0;
     }
 
     .container {
         width: auto;
+    }
+
+    .initial-clear-button {
+        display: none;
     }
 }
 
@@ -129,7 +136,7 @@ button:active {
         border-bottom: 1px solid #cc550080;
     }
 
-    .flex>.item {
+    .flex > .item {
         margin: 0.25em 0;
     }
 
