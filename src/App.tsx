@@ -91,7 +91,7 @@ const App: React.FC = () => {
     return (
         <>
             <div className="container border">
-                <h1>Cooking Timers</h1>
+                <h1>Cooking Countdown!</h1>
                 <p>
                     Simply enter the food item and the time it takes to cook,
                     add as many timers as you like.

@@ -5,12 +5,13 @@ import App from "./App";
 describe("<App />", () => {
     test("renders the basic form", () => {
         render(<App />);
-        expect(screen.getByText(/Cooking Timers/i)).toBeInTheDocument();
+        expect(screen.getByText(/Cooking Countdown!/i)).toBeInTheDocument();
         const buttons = screen.getAllByRole("button");
 
         expect(buttons).toHaveLength(3);
-        expect(buttons[0]).toHaveTextContent(/add timer/i);
-        expect(buttons[1]).toHaveTextContent(/go!/i);
+        expect(buttons[0]).toHaveTextContent(/clear/i);
+        expect(buttons[1]).toHaveTextContent(/add timer/i);
+        expect(buttons[2]).toHaveTextContent(/go!/i);
 
         expect(screen.getAllByRole("textbox")).toHaveLength(1);
         expect(screen.getAllByRole("spinbutton")).toHaveLength(1);
