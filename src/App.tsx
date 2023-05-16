@@ -81,7 +81,7 @@ const App: React.FC = () => {
             for (let i = 1; i < formattedTimers.length; i++) {
                 formattedTimers[i].timeAfter = Math.abs(
                     formattedTimers[i].timeLength -
-                        formattedTimers[i - 1].timeLength
+                    formattedTimers[i - 1].timeLength
                 );
             }
         }
@@ -111,7 +111,7 @@ const App: React.FC = () => {
                                                         className="grid"
                                                         key={index}
                                                     >
-                                                        <div className="field">
+                                                        <div className="field food-item">
                                                             <Field
                                                                 className="item border"
                                                                 name={`timers.${index}.timeName`}
@@ -124,7 +124,7 @@ const App: React.FC = () => {
                                                                 Food Item
                                                             </label>
                                                         </div>
-                                                        <div className="field">
+                                                        <div className="field cooking-time">
                                                             <Field
                                                                 className="item border number"
                                                                 name={`timers.${index}.timeLength`}
@@ -138,10 +138,9 @@ const App: React.FC = () => {
                                                             </label>
                                                         </div>
                                                         <button
-                                                            className={`item ${
-                                                                index === 0 &&
+                                                            className={`item clear-button ${index === 0 &&
                                                                 "initial-clear-button"
-                                                            }`}
+                                                                }`}
                                                             type="button"
                                                             onClick={() =>
                                                                 remove(index)
