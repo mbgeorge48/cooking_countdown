@@ -3,11 +3,18 @@ import { Formik, Field, Form, FieldArray } from "formik";
 
 interface Timer {
     timeName: string;
-    timeLength: number;
+    timeLength: number | undefined;
     timeAfter: number;
 }
 interface Values {
     timers: Timer[];
+}
+
+function handleUndefinedTimeLength(number: number | undefined) {
+    if (number) {
+        return number;
+    }
+    return 0;
 }
 
 function minuteWording(number: number) {
@@ -16,7 +23,7 @@ function minuteWording(number: number) {
 
 function generateHtmlInstructions(baseTimers: Timer[] | undefined) {
     if (!baseTimers || !baseTimers[0]) {
-        return undefined
+        return undefined;
     }
 
     const elements = [
@@ -24,7 +31,9 @@ function generateHtmlInstructions(baseTimers: Timer[] | undefined) {
             <strong>{baseTimers[0].timeName}</strong> goes in first for{" "}
             <strong>
                 {baseTimers[0].timeLength}{" "}
-                {minuteWording(baseTimers[0].timeLength)}
+                {minuteWording(
+                    handleUndefinedTimeLength(baseTimers[0].timeLength)
+                )}
             </strong>
         </span>,
     ];
@@ -32,8 +41,8 @@ function generateHtmlInstructions(baseTimers: Timer[] | undefined) {
         if (baseTimers[i].timeAfter === 0) {
             elements.push(
                 <span className="instruction">
-                    <strong>{baseTimers[i].timeName}</strong> starts at
-                    the <strong>same time</strong> as{" "}
+                    <strong>{baseTimers[i].timeName}</strong> starts at the{" "}
+                    <strong>same time</strong> as{" "}
                     <strong>{baseTimers[i - 1].timeName}</strong>
                 </span>
             );
@@ -48,7 +57,9 @@ function generateHtmlInstructions(baseTimers: Timer[] | undefined) {
                     after {baseTimers[i - 1].timeName} and goes in for{" "}
                     <strong>
                         {baseTimers[i].timeLength}{" "}
-                        {minuteWording(baseTimers[i].timeLength)}
+                        {minuteWording(
+                            handleUndefinedTimeLength(baseTimers[i].timeLength)
+                        )}
                     </strong>
                 </span>
             );
@@ -58,16 +69,33 @@ function generateHtmlInstructions(baseTimers: Timer[] | undefined) {
 }
 function generateRawInstructions(baseTimers: Timer[] | undefined) {
     if (!baseTimers || !baseTimers[0]) {
-        return undefined
+        return undefined;
     }
 
-    const elements = [`1. ${baseTimers[0].timeName} goes in first for ${baseTimers[0].timeLength} ${minuteWording(baseTimers[0].timeLength)}`];
+    const elements = [
+        `1. ${baseTimers[0].timeName} goes in first for ${
+            baseTimers[0].timeLength
+        } ${minuteWording(
+            handleUndefinedTimeLength(baseTimers[0].timeLength)
+        )}`,
+    ];
     for (let i = 1; i < baseTimers.length; i++) {
         if (baseTimers[i].timeAfter === 0) {
-            elements.push(`${i + 1}. ${baseTimers[i].timeName} starts at the same time as ${baseTimers[i - 1].timeName}`);
+            elements.push(
+                `${i + 1}. ${
+                    baseTimers[i].timeName
+                } starts at the same time as ${baseTimers[i - 1].timeName}`
+            );
         } else {
             elements.push(
-                `${i + 1}. ${baseTimers[i].timeName} starts ${baseTimers[i].timeAfter} ${minuteWording(baseTimers[i].timeAfter)} after ${baseTimers[i - 1].timeName} and goes in for ${baseTimers[i].timeLength} ${minuteWording(baseTimers[i].timeLength)}`);
+                `${i + 1}. ${baseTimers[i].timeName} starts ${
+                    baseTimers[i].timeAfter
+                } ${minuteWording(baseTimers[i].timeAfter)} after ${
+                    baseTimers[i - 1].timeName
+                } and goes in for ${baseTimers[i].timeLength} ${minuteWording(
+                    handleUndefinedTimeLength(baseTimers[i].timeLength)
+                )}`
+            );
         }
     }
     return elements;
@@ -78,7 +106,7 @@ const App: React.FC = () => {
         timers: [
             {
                 timeName: "",
-                timeLength: 0,
+                timeLength: undefined,
                 timeAfter: 0,
             },
         ],
@@ -86,9 +114,10 @@ const App: React.FC = () => {
     const [baseTimers, setBaseTimers] = useState<Timer[]>();
     const [instructions, setInstructions] = useState<JSX.Element[]>();
     const [rawInstructions, setRawInstructions] = useState<string[]>();
-    const copyClipboardWordingDefault = "Copy to Clipboard"
-    const [copyClipboardWording, setCopyClipboardWording] = useState<string>(copyClipboardWordingDefault);
-
+    const copyClipboardWordingDefault = "Copy to Clipboard";
+    const [copyClipboardWording, setCopyClipboardWording] = useState<string>(
+        copyClipboardWordingDefault
+    );
 
     useEffect(() => {
         setInstructions(generateHtmlInstructions(baseTimers));
@@ -98,17 +127,22 @@ const App: React.FC = () => {
     const handleSubmit = useCallback((values: Values) => {
         const formattedTimers = values.timers
             .slice()
-            .filter((timer) => timer.timeLength > 0)
+            .filter((timer) => handleUndefinedTimeLength(timer.timeLength) > 0)
             .filter((timer) => timer.timeName)
             .sort(function (a, b) {
-                return a.timeLength - b.timeLength;
+                return (
+                    handleUndefinedTimeLength(a.timeLength) -
+                    handleUndefinedTimeLength(b.timeLength)
+                );
             })
             .reverse();
         if (formattedTimers.length > 1) {
             for (let i = 1; i < formattedTimers.length; i++) {
                 formattedTimers[i].timeAfter = Math.abs(
-                    formattedTimers[i].timeLength -
-                    formattedTimers[i - 1].timeLength
+                    handleUndefinedTimeLength(formattedTimers[i].timeLength) -
+                        handleUndefinedTimeLength(
+                            formattedTimers[i - 1].timeLength
+                        )
                 );
             }
         }
@@ -116,12 +150,23 @@ const App: React.FC = () => {
     }, []);
 
     const handleCopyInstructions = useCallback(() => {
-        rawInstructions && navigator.clipboard.writeText(rawInstructions.toString());
-        setCopyClipboardWording("Copied!");
-        setTimeout(() => {
-            setCopyClipboardWording(copyClipboardWordingDefault);
-        }, 500);
-    }, [rawInstructions])
+        if (!window.isSecureContext) {
+            alert(
+                "Unable to copy, looks like the website is on an unsecure origin"
+            );
+        } else {
+            rawInstructions &&
+                navigator.clipboard
+                    .writeText(rawInstructions.join("\r\n"))
+                    .then(() => {
+                        alert("successfully copied");
+                    });
+            setCopyClipboardWording("Copied!");
+            setTimeout(() => {
+                setCopyClipboardWording(copyClipboardWordingDefault);
+            }, 500);
+        }
+    }, [rawInstructions]);
 
     return (
         <>
@@ -173,9 +218,10 @@ const App: React.FC = () => {
                                                             </label>
                                                         </div>
                                                         <button
-                                                            className={`item clear - button ${index === 0 &&
+                                                            className={`item clear - button ${
+                                                                index === 0 &&
                                                                 "initial-clear-button"
-                                                                } `}
+                                                            } `}
                                                             type="button"
                                                             onClick={() =>
                                                                 remove(index)
@@ -193,7 +239,7 @@ const App: React.FC = () => {
                                             onClick={() =>
                                                 push({
                                                     timeName: "",
-                                                    timeLength: 0,
+                                                    timeLength: undefined,
                                                     timeAfter: 0,
                                                 })
                                             }
