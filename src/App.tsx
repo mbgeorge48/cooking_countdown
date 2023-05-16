@@ -14,6 +14,65 @@ function minuteWording(number: number) {
     return "minute".concat(number > 1 ? "s" : "");
 }
 
+function generateHtmlInstructions(baseTimers: Timer[] | undefined) {
+    if (!baseTimers || !baseTimers[0]) {
+        return undefined
+    }
+
+    const elements = [
+        <span className="instruction">
+            <strong>{baseTimers[0].timeName}</strong> goes in first for{" "}
+            <strong>
+                {baseTimers[0].timeLength}{" "}
+                {minuteWording(baseTimers[0].timeLength)}
+            </strong>
+        </span>,
+    ];
+    for (let i = 1; i < baseTimers.length; i++) {
+        if (baseTimers[i].timeAfter === 0) {
+            elements.push(
+                <span className="instruction">
+                    <strong>{baseTimers[i].timeName}</strong> starts at
+                    the <strong>same time</strong> as{" "}
+                    <strong>{baseTimers[i - 1].timeName}</strong>
+                </span>
+            );
+        } else {
+            elements.push(
+                <span className="instruction">
+                    <strong>{baseTimers[i].timeName}</strong> starts{" "}
+                    <strong>
+                        {baseTimers[i].timeAfter}{" "}
+                        {minuteWording(baseTimers[i].timeAfter)}
+                    </strong>{" "}
+                    after {baseTimers[i - 1].timeName} and goes in for{" "}
+                    <strong>
+                        {baseTimers[i].timeLength}{" "}
+                        {minuteWording(baseTimers[i].timeLength)}
+                    </strong>
+                </span>
+            );
+        }
+    }
+    return elements;
+}
+function generateRawInstructions(baseTimers: Timer[] | undefined) {
+    if (!baseTimers || !baseTimers[0]) {
+        return undefined
+    }
+
+    const elements = [`1. ${baseTimers[0].timeName} goes in first for ${baseTimers[0].timeLength} ${minuteWording(baseTimers[0].timeLength)}`];
+    for (let i = 1; i < baseTimers.length; i++) {
+        if (baseTimers[i].timeAfter === 0) {
+            elements.push(`${i + 1}. ${baseTimers[i].timeName} starts at the same time as ${baseTimers[i - 1].timeName}`);
+        } else {
+            elements.push(
+                `${i + 1}. ${baseTimers[i].timeName} starts ${baseTimers[i].timeAfter} ${minuteWording(baseTimers[i].timeAfter)} after ${baseTimers[i - 1].timeName} and goes in for ${baseTimers[i].timeLength} ${minuteWording(baseTimers[i].timeLength)}`);
+        }
+    }
+    return elements;
+}
+
 const App: React.FC = () => {
     const initialValues: Values = {
         timers: [
@@ -26,46 +85,14 @@ const App: React.FC = () => {
     };
     const [baseTimers, setBaseTimers] = useState<Timer[]>();
     const [instructions, setInstructions] = useState<JSX.Element[]>();
+    const [rawInstructions, setRawInstructions] = useState<string[]>();
+    const copyClipboardWordingDefault = "Copy to Clipboard"
+    const [copyClipboardWording, setCopyClipboardWording] = useState<string>(copyClipboardWordingDefault);
+
 
     useEffect(() => {
-        if (baseTimers && baseTimers[0]) {
-            const elements = [
-                <span className="instruction">
-                    <strong>{baseTimers[0].timeName}</strong> goes in first for{" "}
-                    <strong>
-                        {baseTimers[0].timeLength}{" "}
-                        {minuteWording(baseTimers[0].timeLength)}
-                    </strong>
-                </span>,
-            ];
-            for (let i = 1; i < baseTimers.length; i++) {
-                if (baseTimers[i].timeAfter > 0) {
-                    elements.push(
-                        <span className="instruction">
-                            <strong>{baseTimers[i].timeName}</strong> starts{" "}
-                            <strong>
-                                {baseTimers[i].timeAfter}{" "}
-                                {minuteWording(baseTimers[i].timeAfter)}
-                            </strong>{" "}
-                            after {baseTimers[i - 1].timeName} and goes in for{" "}
-                            <strong>
-                                {baseTimers[i].timeLength}{" "}
-                                {minuteWording(baseTimers[i].timeLength)}
-                            </strong>
-                        </span>
-                    );
-                } else {
-                    elements.push(
-                        <span className="instruction">
-                            <strong>{baseTimers[i].timeName}</strong> starts at
-                            the <strong>same time</strong> as{" "}
-                            <strong>{baseTimers[i - 1].timeName}</strong>
-                        </span>
-                    );
-                }
-            }
-            setInstructions(elements);
-        }
+        setInstructions(generateHtmlInstructions(baseTimers));
+        setRawInstructions(generateRawInstructions(baseTimers));
     }, [baseTimers]);
 
     const handleSubmit = useCallback((values: Values) => {
@@ -87,6 +114,14 @@ const App: React.FC = () => {
         }
         setBaseTimers(formattedTimers);
     }, []);
+
+    const handleCopyInstructions = useCallback(() => {
+        rawInstructions && navigator.clipboard.writeText(rawInstructions.toString());
+        setCopyClipboardWording("Copied!");
+        setTimeout(() => {
+            setCopyClipboardWording(copyClipboardWordingDefault);
+        }, 500);
+    }, [rawInstructions])
 
     return (
         <>
@@ -138,9 +173,9 @@ const App: React.FC = () => {
                                                             </label>
                                                         </div>
                                                         <button
-                                                            className={`item clear-button ${index === 0 &&
+                                                            className={`item clear - button ${index === 0 &&
                                                                 "initial-clear-button"
-                                                                }`}
+                                                                } `}
                                                             type="button"
                                                             onClick={() =>
                                                                 remove(index)
@@ -182,6 +217,13 @@ const App: React.FC = () => {
                             <li key={index}>{instruction}</li>
                         ))}
                     </ol>
+                    <button
+                        type="button"
+                        className="item"
+                        onClick={handleCopyInstructions}
+                    >
+                        {copyClipboardWording}
+                    </button>
                 </div>
             ) : undefined}
         </>
