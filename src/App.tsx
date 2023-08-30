@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { Formik, Field, Form, FieldArray } from "formik";
+import { Formik, Field, Form, FieldArray, ArrayHelpers } from "formik";
 
 interface Timer {
     timeName: string;
@@ -169,7 +169,7 @@ const App: React.FC = () => {
     }, [rawInstructions]);
 
     return (
-        <>
+        <div className="wrapper">
             <div className="container border">
                 <h1>Cooking Countdown!</h1>
                 <p>
@@ -182,7 +182,7 @@ const App: React.FC = () => {
                     {({ values }) => (
                         <Form>
                             <FieldArray name="timers">
-                                {({ remove, push }) => (
+                                {({ remove, push }: ArrayHelpers) => (
                                     <div>
                                         {values.timers.length > 0 &&
                                             values.timers.map(
@@ -272,7 +272,7 @@ const App: React.FC = () => {
                     </button>
                 </div>
             ) : undefined}
-        </>
+        </div>
     );
 };
 
