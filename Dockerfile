@@ -1,16 +1,9 @@
-FROM node:18
-
-RUN mkdir /app
+FROM node:20-alpine
 WORKDIR /app
+COPY package.json .
+COPY yarn.lock .
 
-COPY package*.json /app/
-
-# RUN npm install
-# If you are building your code for production
-RUN npm ci --omit=dev
-
-COPY . /app
-
-
+RUN yarn install
+COPY . .
 EXPOSE 3000
-CMD [ "npm", "start" ]
+CMD [ "yarn", "start" ]
