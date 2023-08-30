@@ -169,7 +169,7 @@ const App: React.FC = () => {
     }, [rawInstructions]);
 
     return (
-        <>
+        <div className="wrapper">
             <div className="container border">
                 <h1>Cooking Countdown!</h1>
                 <p>
@@ -272,7 +272,7 @@ const App: React.FC = () => {
                     </button>
                 </div>
             ) : undefined}
-        </>
+        </div>
     );
 };
 
