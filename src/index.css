@@ -1,8 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@400;700&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Lisu+Bosa:wght@400;700&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Neuton:wght@400;700&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&display=swap");
-@import url("https://fonts.googleapis.com/css2?&family=Roboto+Slab:wght@400;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@400;700&family=Roboto+Slab:wght@400;700&display=swap");
 
 :root {
     --background: #f0f0f0;
@@ -25,6 +21,7 @@ body {
 
 h1 {
     color: var(--text-alt);
+    font-weight: 700;
 }
 
 .wrapper {
@@ -82,6 +79,7 @@ input {
     -moz-appearance: textfield;
     outline: none;
     font-weight: bold;
+    font-family: "Roboto Condensed";
 }
 
 input:active,
@@ -101,6 +99,8 @@ button {
     cursor: pointer;
     margin: 1em;
     font-size: 1rem;
+    font-family: "Roboto Condensed";
+    font-weight: 700;
 }
 
 button:hover,
