@@ -23,7 +23,9 @@
         "test": "react-scripts test",
         "eject": "react-scripts eject",
         "tests": "npm run typecheck && npm test -- --coverage --runInBand --watchAll=false",
-        "typecheck": "tsc --noEmit --project tsconfig.json"
+        "typecheck": "tsc --noEmit --project tsconfig.json",
+        "sync": "aws s3 sync build 's3://cookingcountdown.com/'",
+        "invalidate": "aws cloudfront create-invalidation --distribution-id E2B5M7ZZ1MSOK2 --path '/*'"
     },
     "eslintConfig": {
         "extends": [
