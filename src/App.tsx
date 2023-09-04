@@ -156,15 +156,11 @@ const App: React.FC = () => {
             );
         } else {
             rawInstructions &&
-                navigator.clipboard
-                    .writeText(rawInstructions.join("\r\n"))
-                    .then(() => {
-                        alert("successfully copied");
-                    });
+                navigator.clipboard.writeText(rawInstructions.join("\r\n"));
             setCopyClipboardWording("Copied!");
             setTimeout(() => {
                 setCopyClipboardWording(copyClipboardWordingDefault);
-            }, 500);
+            }, 1000);
         }
     }, [rawInstructions]);
 
@@ -215,13 +211,15 @@ const App: React.FC = () => {
                                                                 htmlFor={`timers.${index}.timeLength`}
                                                             >
                                                                 Cooking Time
+                                                                (mins)
                                                             </label>
                                                         </div>
                                                         <button
-                                                            className={`item clear - button ${
-                                                                index === 0 &&
-                                                                "initial-clear-button"
-                                                            } `}
+                                                            className={`clear-button${
+                                                                index === 0
+                                                                    ? " initial-clear-button"
+                                                                    : ""
+                                                            }`}
                                                             type="button"
                                                             onClick={() =>
                                                                 remove(index)
