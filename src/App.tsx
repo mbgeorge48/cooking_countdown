@@ -1,5 +1,9 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { Formik, Field, Form, FieldArray, ArrayHelpers } from "formik";
+import { Formik, Form, FieldArray, ArrayHelpers } from "formik";
+import { FoodItemField } from "./FoodItemField";
+import { CookingTimeField } from "./CookingTimeField";
+import { Heading } from "./Heading";
+import { Instructions } from "./Instructions";
 
 interface Timer {
     timeName: string;
@@ -67,7 +71,7 @@ function generateHtmlInstructions(baseTimers: Timer[] | undefined) {
     }
     return elements;
 }
-function generateRawInstructions(baseTimers: Timer[] | undefined) {
+function generatePlainTextInstructions(baseTimers: Timer[] | undefined) {
     if (!baseTimers || !baseTimers[0]) {
         return undefined;
     }
@@ -102,26 +106,22 @@ function generateRawInstructions(baseTimers: Timer[] | undefined) {
 }
 
 const App: React.FC = () => {
+    const emptyTimer = {
+        timeName: "",
+        timeLength: undefined,
+        timeAfter: 0,
+    };
     const initialValues: Values = {
-        timers: [
-            {
-                timeName: "",
-                timeLength: undefined,
-                timeAfter: 0,
-            },
-        ],
+        timers: [emptyTimer],
     };
     const [baseTimers, setBaseTimers] = useState<Timer[]>();
     const [instructions, setInstructions] = useState<JSX.Element[]>();
-    const [rawInstructions, setRawInstructions] = useState<string[]>();
-    const copyClipboardWordingDefault = "Copy to Clipboard";
-    const [copyClipboardWording, setCopyClipboardWording] = useState<string>(
-        copyClipboardWordingDefault
-    );
+    const [plainTextInstructions, setPlainTextInstructions] =
+        useState<string[]>();
 
     useEffect(() => {
         setInstructions(generateHtmlInstructions(baseTimers));
-        setRawInstructions(generateRawInstructions(baseTimers));
+        setPlainTextInstructions(generatePlainTextInstructions(baseTimers));
     }, [baseTimers]);
 
     const handleSubmit = useCallback((values: Values) => {
@@ -149,31 +149,10 @@ const App: React.FC = () => {
         setBaseTimers(formattedTimers);
     }, []);
 
-    const handleCopyInstructions = useCallback(() => {
-        if (!window.isSecureContext) {
-            alert(
-                "Unable to copy, looks like the website is on an unsecure origin"
-            );
-        } else {
-            rawInstructions &&
-                navigator.clipboard.writeText(rawInstructions.join("\r\n"));
-            setCopyClipboardWording("Copied!");
-            setTimeout(() => {
-                setCopyClipboardWording(copyClipboardWordingDefault);
-            }, 1000);
-        }
-    }, [rawInstructions]);
-
     return (
         <div className="wrapper">
             <div className="container border">
-                <h1>Cooking Countdown!</h1>
-                <p>
-                    Simply enter the food item and the time it takes to cook,
-                    add as many timers as you like.
-                    <br />
-                    Hit go when you're ready!
-                </p>
+                <Heading />
                 <Formik initialValues={initialValues} onSubmit={handleSubmit}>
                     {({ values }) => (
                         <Form>
@@ -187,33 +166,12 @@ const App: React.FC = () => {
                                                         className="grid"
                                                         key={index}
                                                     >
-                                                        <div className="field food-item">
-                                                            <Field
-                                                                className="item border"
-                                                                name={`timers.${index}.timeName`}
-                                                                id={`timers.${index}.timeName`}
-                                                                type="text"
-                                                            />
-                                                            <label
-                                                                htmlFor={`timers.${index}.timeName`}
-                                                            >
-                                                                Food Item
-                                                            </label>
-                                                        </div>
-                                                        <div className="field cooking-time">
-                                                            <Field
-                                                                className="item border number"
-                                                                name={`timers.${index}.timeLength`}
-                                                                id={`timers.${index}.timeLength`}
-                                                                type="number"
-                                                            />
-                                                            <label
-                                                                htmlFor={`timers.${index}.timeLength`}
-                                                            >
-                                                                Cooking Time
-                                                                (mins)
-                                                            </label>
-                                                        </div>
+                                                        <FoodItemField
+                                                            index={index}
+                                                        />
+                                                        <CookingTimeField
+                                                            index={index}
+                                                        />
                                                         <button
                                                             className={`clear-button${
                                                                 index === 0
@@ -230,17 +188,10 @@ const App: React.FC = () => {
                                                     </div>
                                                 )
                                             )}
-
                                         <button
                                             type="button"
                                             className="item"
-                                            onClick={() =>
-                                                push({
-                                                    timeName: "",
-                                                    timeLength: undefined,
-                                                    timeAfter: 0,
-                                                })
-                                            }
+                                            onClick={() => push(emptyTimer)}
                                         >
                                             Add Timer
                                         </button>
@@ -254,22 +205,12 @@ const App: React.FC = () => {
                     )}
                 </Formik>
             </div>
-            {instructions && instructions.length > 0 ? (
-                <div className="container border">
-                    <ol type="1">
-                        {instructions.map((instruction, index) => (
-                            <li key={index}>{instruction}</li>
-                        ))}
-                    </ol>
-                    <button
-                        type="button"
-                        className="item"
-                        onClick={handleCopyInstructions}
-                    >
-                        {copyClipboardWording}
-                    </button>
-                </div>
-            ) : undefined}
+            {instructions && plainTextInstructions && (
+                <Instructions
+                    instructions={instructions}
+                    plainTextInstructions={plainTextInstructions}
+                />
+            )}
         </div>
     );
 };
