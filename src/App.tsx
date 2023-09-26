@@ -4,6 +4,7 @@ import { FoodItemField } from "./FoodItemField";
 import { CookingTimeField } from "./CookingTimeField";
 import { Heading } from "./Heading";
 import { Instructions } from "./Instructions";
+import { Contact } from "./Contact";
 
 interface Timer {
     timeName: string;
@@ -150,68 +151,79 @@ const App: React.FC = () => {
     }, []);
 
     return (
-        <div className="wrapper">
-            <div className="container border">
-                <Heading />
-                <Formik initialValues={initialValues} onSubmit={handleSubmit}>
-                    {({ values }) => (
-                        <Form>
-                            <FieldArray name="timers">
-                                {({ remove, push }: ArrayHelpers) => (
-                                    <div>
-                                        {values.timers.length > 0 &&
-                                            values.timers.map(
-                                                (timer, index) => (
-                                                    <div
-                                                        className="grid"
-                                                        key={index}
-                                                    >
-                                                        <FoodItemField
-                                                            index={index}
-                                                        />
-                                                        <CookingTimeField
-                                                            index={index}
-                                                        />
-                                                        <button
-                                                            className={`clear-button${
-                                                                index === 0
-                                                                    ? " initial-clear-button"
-                                                                    : ""
-                                                            }`}
-                                                            type="button"
-                                                            onClick={() =>
-                                                                remove(index)
-                                                            }
+        <>
+            <div className="wrapper">
+                <div className="container border">
+                    <Heading />
+                    <Formik
+                        initialValues={initialValues}
+                        onSubmit={handleSubmit}
+                    >
+                        {({ values }) => (
+                            <Form>
+                                <FieldArray name="timers">
+                                    {({ remove, push }: ArrayHelpers) => (
+                                        <div>
+                                            {values.timers.length > 0 &&
+                                                values.timers.map(
+                                                    (timer, index) => (
+                                                        <div
+                                                            className="grid"
+                                                            key={index}
                                                         >
-                                                            Clear
-                                                        </button>
-                                                    </div>
-                                                )
-                                            )}
-                                        <button
-                                            type="button"
-                                            className="item"
-                                            onClick={() => push(emptyTimer)}
-                                        >
-                                            Add Timer
-                                        </button>
-                                        <button className="item" type="submit">
-                                            Go!
-                                        </button>
-                                    </div>
-                                )}
-                            </FieldArray>
-                        </Form>
-                    )}
-                </Formik>
+                                                            <FoodItemField
+                                                                index={index}
+                                                            />
+                                                            <CookingTimeField
+                                                                index={index}
+                                                            />
+                                                            <button
+                                                                className={`clear-button${
+                                                                    index === 0
+                                                                        ? " initial-clear-button"
+                                                                        : ""
+                                                                }`}
+                                                                type="button"
+                                                                onClick={() =>
+                                                                    remove(
+                                                                        index
+                                                                    )
+                                                                }
+                                                            >
+                                                                Clear
+                                                            </button>
+                                                        </div>
+                                                    )
+                                                )}
+                                            <button
+                                                type="button"
+                                                className="item"
+                                                onClick={() => push(emptyTimer)}
+                                            >
+                                                Add Timer
+                                            </button>
+                                            <button
+                                                className="item"
+                                                type="submit"
+                                            >
+                                                Go!
+                                            </button>
+                                        </div>
+                                    )}
+                                </FieldArray>
+                            </Form>
+                        )}
+                    </Formik>
+                </div>
+                {instructions && plainTextInstructions && (
+                    <Instructions
+                        instructions={instructions}
+                        plainTextInstructions={plainTextInstructions}
+                    />
+                )}
             </div>
-            {instructions && plainTextInstructions && (
-                <Instructions
-                    instructions={instructions}
-                    plainTextInstructions={plainTextInstructions}
-                />
-            )}
-        </div>
+            <Contact />
+        </>
     );
 };
 

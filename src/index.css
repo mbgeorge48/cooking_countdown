@@ -27,10 +27,7 @@ h1 {
 
 .wrapper {
     padding: 1em;
-    background-image: linear-gradient(
-        var(--inner-background),
-        var(--background)
-    );
+    background-color: var(--background);
 }
 
 .container {
@@ -116,6 +113,20 @@ button:active {
     visibility: hidden;
 }
 
+.contact-container {
+    display: flex;
+    justify-content: flex-end;
+    padding-right: 2em;
+    padding-bottom: 2em;
+}
+
+a {
+    color: var(--orange);
+}
+a:hover {
+    color: var(--dark-blue);
+}
+
 @media screen and (max-width: 900px) {
     .grid {
         place-items: center;
@@ -167,18 +178,10 @@ button:active {
         border: 0;
         margin: 0;
         border-radius: 0;
-        padding: 2em;
         border-bottom: 1px solid var(--orange);
     }
 
     .flex > .item {
         margin: 0.25em 0;
-    }
-
-    body {
-        background-image: linear-gradient(
-            var(--background),
-            var(--inner-background)
-        );
     }
 }
