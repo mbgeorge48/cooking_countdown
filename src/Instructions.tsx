@@ -27,7 +27,7 @@ export const Instructions: React.FC<{
     }, [plainTextInstructions]);
 
     return (
-        <div className="container border">
+        <footer className="container border">
             <ol type="1">
                 {instructions.map((instruction, index) => (
                     <li key={index}>{instruction}</li>
@@ -40,6 +40,6 @@ export const Instructions: React.FC<{
             >
                 {copyClipboardWording}
             </button>
-        </div>
+        </footer>
     );
 };
