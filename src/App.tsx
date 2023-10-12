@@ -160,58 +160,67 @@ const App: React.FC = () => {
                         onSubmit={handleSubmit}
                     >
                         {({ values }) => (
-                            <Form>
-                                <FieldArray name="timers">
-                                    {({ remove, push }: ArrayHelpers) => (
-                                        <div>
-                                            {values.timers.length > 0 &&
-                                                values.timers.map(
-                                                    (timer, index) => (
-                                                        <div
-                                                            className="grid"
-                                                            key={index}
-                                                        >
-                                                            <FoodItemField
-                                                                index={index}
-                                                            />
-                                                            <CookingTimeField
-                                                                index={index}
-                                                            />
-                                                            <button
-                                                                className={`clear-button${
-                                                                    index === 0
-                                                                        ? " initial-clear-button"
-                                                                        : ""
-                                                                }`}
-                                                                type="button"
-                                                                onClick={() =>
-                                                                    remove(
-                                                                        index
-                                                                    )
-                                                                }
+                            <main>
+                                <Form>
+                                    <FieldArray name="timers">
+                                        {({ remove, push }: ArrayHelpers) => (
+                                            <div>
+                                                {values.timers.length > 0 &&
+                                                    values.timers.map(
+                                                        (timer, index) => (
+                                                            <div
+                                                                className="grid"
+                                                                key={index}
                                                             >
-                                                                Clear
-                                                            </button>
-                                                        </div>
-                                                    )
-                                                )}
-                                            <button
-                                                type="button"
-                                                className="item"
-                                                onClick={() => push(emptyTimer)}
-                                            >
-                                                Add Timer
-                                            </button>
-                                            <button
-                                                className="item"
-                                                type="submit"
-                                            >
-                                                Go!
-                                            </button>
-                                        </div>
-                                    )}
-                                </FieldArray>
-                            </Form>
+                                                                <FoodItemField
+                                                                    index={
+                                                                        index
+                                                                    }
+                                                                />
+                                                                <CookingTimeField
+                                                                    index={
+                                                                        index
+                                                                    }
+                                                                />
+                                                                <button
+                                                                    className={`clear-button${
+                                                                        index ===
+                                                                        0
+                                                                            ? " initial-clear-button"
+                                                                            : ""
+                                                                    }`}
+                                                                    type="button"
+                                                                    onClick={() =>
+                                                                        remove(
+                                                                            index
+                                                                        )
+                                                                    }
+                                                                >
+                                                                    Clear
+                                                                </button>
+                                                            </div>
+                                                        )
+                                                    )}
+                                                <button
+                                                    type="button"
+                                                    className="item"
+                                                    onClick={() =>
+                                                        push(emptyTimer)
+                                                    }
+                                                >
+                                                    Add Timer
+                                                </button>
+                                                <button
+                                                    className="item"
+                                                    type="submit"
+                                                >
+                                                    Go!
+                                                </button>
+                                            </div>
+                                        )}
+                                    </FieldArray>
+                                </Form>
+                            </main>
                         )}
                     </Formik>
                 </div>
