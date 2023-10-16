@@ -1,5 +1,7 @@
 # Cooking Countdown ⏲️
 
+[![React CI](https://github.com/mbgeorge48/cooking_countdown/actions/workflows/ci-frontend.yml/badge.svg)](https://github.com/mbgeorge48/cooking_countdown/actions/workflows/ci-frontend.yml)
+
 Have you even been cooking and needed to set a dozen timers to make sure your food is all ready at the same time??
 
 If your answer is yes then this little app might be able to lend a hand.
@@ -22,4 +24,6 @@ Easy!
 
 ---
 
-[![React CI](https://github.com/mbgeorge48/cooking_countdown/actions/workflows/ci-frontend.yml/badge.svg)](https://github.com/mbgeorge48/cooking_countdown/actions/workflows/ci-frontend.yml)
+### TODOs
+
+Fix console errors in tests
