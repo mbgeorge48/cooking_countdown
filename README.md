@@ -22,4 +22,4 @@ Easy!
 
 ---
 
-[![Build & Test](https://github.com/mbgeorge48/cooking_countdown/actions/workflows/build_and_test.yml/badge.svg)](https://github.com/mbgeorge48/cooking_countdown/actions/workflows/build_and_test.yml)
+[![React CI](https://github.com/mbgeorge48/cooking_countdown/actions/workflows/ci-frontend.yml/badge.svg)](https://github.com/mbgeorge48/cooking_countdown/actions/workflows/ci-frontend.yml)
