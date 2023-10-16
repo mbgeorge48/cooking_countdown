@@ -1,15 +1,19 @@
 import { Field } from "formik";
 
-export const FoodItemField: React.FC<{ index: number }> = ({ index }) => {
+interface Props {
+    index: number;
+}
+
+export const FoodItemField = (props: Props) => {
     return (
         <div className="field food-item">
             <Field
                 className="item border"
-                name={`timers.${index}.timeName`}
-                id={`timers.${index}.timeName`}
+                name={`timers.${props.index}.timeName`}
+                id={`timers.${props.index}.timeName`}
                 type="text"
             />
-            <label htmlFor={`timers.${index}.timeName`}>Food Item</label>
+            <label htmlFor={`timers.${props.index}.timeName`}>Food Item</label>
         </div>
     );
 };

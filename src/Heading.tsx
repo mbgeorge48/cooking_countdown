@@ -1,4 +1,4 @@
-export const Heading: React.FC = () => {
+export const Heading = () => {
     return (
         <header>
             <h1>Cooking Countdown!</h1>

@@ -1,4 +1,4 @@
-export const Contact: React.FC = () => {
+export const Contact = () => {
     return (
         <div className={"contact-container"}>
             <a
