@@ -84,6 +84,7 @@ input:focus {
 }
 
 button {
+    outline: none;
     height: min-content;
     text-align: center;
     background-color: var(--primary);
@@ -100,6 +101,7 @@ button {
 }
 
 button:hover,
+button:focus,
 button:active {
     background-color: #ffffff;
     color: var(--primary);

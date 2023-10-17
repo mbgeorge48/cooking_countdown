@@ -1,9 +1,13 @@
 import { useCallback, useState } from "react";
 
-export const Instructions: React.FC<{
+interface Props {
     instructions: JSX.Element[];
     plainTextInstructions: string[];
-}> = ({ instructions, plainTextInstructions }) => {
+}
+
+export const Instructions = (props: Props) => {
+    const { instructions, plainTextInstructions } = props;
+
     const copyClipboardWordingDefault = "Copy to Clipboard";
     const [copyClipboardWording, setCopyClipboardWording] = useState<string>(
         copyClipboardWordingDefault

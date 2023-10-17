@@ -1,0 +1,29 @@
+name: "CI: Test Frontend"
+on:
+    pull_request:
+    workflow_dispatch:
+
+jobs:
+    test:
+        runs-on: ubuntu-latest
+        defaults:
+            run:
+                working-directory: .
+        steps:
+            - name: Checkout Code
+              uses: actions/checkout@v4
+
+            - name: Node Setup
+              uses: actions/setup-node@v3
+              with:
+                  node-version-file: ".nvmrc"
+                  cache: "yarn"
+
+            - name: Yarn Install
+              run: yarn install --frozen-lockfile
+
+            - name: FE linting
+              run: yarn lint --max-warnings=0
+
+            - name: FE tests
+              run: yarn test --maxWorkers=2

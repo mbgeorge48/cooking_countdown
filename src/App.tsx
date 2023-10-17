@@ -32,7 +32,7 @@ function generateHtmlInstructions(baseTimers: Timer[] | undefined) {
     }
 
     const elements = [
-        <span className="instruction">
+        <span className="instruction" key={0}>
             <strong>{baseTimers[0].timeName}</strong> goes in first for{" "}
             <strong>
                 {baseTimers[0].timeLength}{" "}
@@ -45,7 +45,7 @@ function generateHtmlInstructions(baseTimers: Timer[] | undefined) {
     for (let i = 1; i < baseTimers.length; i++) {
         if (baseTimers[i].timeAfter === 0) {
             elements.push(
-                <span className="instruction">
+                <span className="instruction" key={i}>
                     <strong>{baseTimers[i].timeName}</strong> starts at the{" "}
                     <strong>same time</strong> as{" "}
                     <strong>{baseTimers[i - 1].timeName}</strong>
@@ -53,7 +53,7 @@ function generateHtmlInstructions(baseTimers: Timer[] | undefined) {
             );
         } else {
             elements.push(
-                <span className="instruction">
+                <span className="instruction" key={i}>
                     <strong>{baseTimers[i].timeName}</strong> starts{" "}
                     <strong>
                         {baseTimers[i].timeAfter}{" "}
