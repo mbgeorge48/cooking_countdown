@@ -25,7 +25,7 @@ jobs:
               with:
                   folder: build
                   bucket: ${{ vars.S3_BUCKET }}
-                  bucket-region: ${{ vars.S3_BUCKET_REGION }}
+                  region: ${{ vars.S3_BUCKET_REGION }}
                   dist-id: ${{ vars.CLOUDFRONT_DISTRIBUTION_ID }}
                   invalidation: /
                   delete-removed: true
