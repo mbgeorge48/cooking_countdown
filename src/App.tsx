@@ -1,19 +1,11 @@
 import { ArrayHelpers, FieldArray, Form, Formik } from "formik";
-import React, { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Contact } from "./Contact";
 import { CookingTimeField } from "./CookingTimeField";
 import { FoodItemField } from "./FoodItemField";
 import { Heading } from "./Heading";
 import { Instructions } from "./Instructions";
-
-type Timer = {
-    timeName: string;
-    timeLength: number | undefined;
-    timeAfter: number;
-};
-type Values = {
-    timers: Timer[];
-};
+import { Timer, Values } from "./types";
 
 function handleUndefinedTimeLength(number: number | undefined) {
     if (number) {
