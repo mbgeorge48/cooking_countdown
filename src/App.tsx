@@ -1,19 +1,19 @@
+import { ArrayHelpers, FieldArray, Form, Formik } from "formik";
 import React, { useCallback, useEffect, useState } from "react";
-import { Formik, Form, FieldArray, ArrayHelpers } from "formik";
-import { FoodItemField } from "./FoodItemField";
+import { Contact } from "./Contact";
 import { CookingTimeField } from "./CookingTimeField";
+import { FoodItemField } from "./FoodItemField";
 import { Heading } from "./Heading";
 import { Instructions } from "./Instructions";
-import { Contact } from "./Contact";
 
-interface Timer {
+type Timer = {
     timeName: string;
     timeLength: number | undefined;
     timeAfter: number;
-}
-interface Values {
+};
+type Values = {
     timers: Timer[];
-}
+};
 
 function handleUndefinedTimeLength(number: number | undefined) {
     if (number) {
@@ -26,44 +26,44 @@ function minuteWording(number: number) {
     return "minute".concat(number > 1 ? "s" : "");
 }
 
-function generateHtmlInstructions(baseTimers: Timer[] | undefined) {
-    if (!baseTimers || !baseTimers[0]) {
+function generateHtmlInstructions(formTimers: Timer[] | undefined) {
+    if (!formTimers || !formTimers[0]) {
         return undefined;
     }
 
     const elements = [
         <span className="instruction" key={0}>
-            <strong>{baseTimers[0].timeName}</strong> goes in first for{" "}
+            <strong>{formTimers[0].timeName}</strong> goes in first for{" "}
             <strong>
-                {baseTimers[0].timeLength}{" "}
+                {formTimers[0].timeLength}{" "}
                 {minuteWording(
-                    handleUndefinedTimeLength(baseTimers[0].timeLength)
+                    handleUndefinedTimeLength(formTimers[0].timeLength)
                 )}
             </strong>
         </span>,
     ];
-    for (let i = 1; i < baseTimers.length; i++) {
-        if (baseTimers[i].timeAfter === 0) {
+    for (let i = 1; i < formTimers.length; i++) {
+        if (formTimers[i].timeAfter === 0) {
             elements.push(
                 <span className="instruction" key={i}>
-                    <strong>{baseTimers[i].timeName}</strong> starts at the{" "}
+                    <strong>{formTimers[i].timeName}</strong> starts at the{" "}
                     <strong>same time</strong> as{" "}
-                    <strong>{baseTimers[i - 1].timeName}</strong>
+                    <strong>{formTimers[i - 1].timeName}</strong>
                 </span>
             );
         } else {
             elements.push(
                 <span className="instruction" key={i}>
-                    <strong>{baseTimers[i].timeName}</strong> starts{" "}
+                    <strong>{formTimers[i].timeName}</strong> starts{" "}
                     <strong>
-                        {baseTimers[i].timeAfter}{" "}
-                        {minuteWording(baseTimers[i].timeAfter)}
+                        {formTimers[i].timeAfter}{" "}
+                        {minuteWording(formTimers[i].timeAfter)}
                     </strong>{" "}
-                    after {baseTimers[i - 1].timeName} and goes in for{" "}
+                    after {formTimers[i - 1].timeName} and goes in for{" "}
                     <strong>
-                        {baseTimers[i].timeLength}{" "}
+                        {formTimers[i].timeLength}{" "}
                         {minuteWording(
-                            handleUndefinedTimeLength(baseTimers[i].timeLength)
+                            handleUndefinedTimeLength(formTimers[i].timeLength)
                         )}
                     </strong>
                 </span>
@@ -72,33 +72,33 @@ function generateHtmlInstructions(baseTimers: Timer[] | undefined) {
     }
     return elements;
 }
-function generatePlainTextInstructions(baseTimers: Timer[] | undefined) {
-    if (!baseTimers || !baseTimers[0]) {
+function generatePlainTextInstructions(formTimers: Timer[] | undefined) {
+    if (!formTimers || !formTimers[0]) {
         return undefined;
     }
 
     const elements = [
-        `1. ${baseTimers[0].timeName} goes in first for ${
-            baseTimers[0].timeLength
+        `1. ${formTimers[0].timeName} goes in first for ${
+            formTimers[0].timeLength
         } ${minuteWording(
-            handleUndefinedTimeLength(baseTimers[0].timeLength)
+            handleUndefinedTimeLength(formTimers[0].timeLength)
         )}`,
     ];
-    for (let i = 1; i < baseTimers.length; i++) {
-        if (baseTimers[i].timeAfter === 0) {
+    for (let i = 1; i < formTimers.length; i++) {
+        if (formTimers[i].timeAfter === 0) {
             elements.push(
                 `${i + 1}. ${
-                    baseTimers[i].timeName
-                } starts at the same time as ${baseTimers[i - 1].timeName}`
+                    formTimers[i].timeName
+                } starts at the same time as ${formTimers[i - 1].timeName}`
             );
         } else {
             elements.push(
-                `${i + 1}. ${baseTimers[i].timeName} starts ${
-                    baseTimers[i].timeAfter
-                } ${minuteWording(baseTimers[i].timeAfter)} after ${
-                    baseTimers[i - 1].timeName
-                } and goes in for ${baseTimers[i].timeLength} ${minuteWording(
-                    handleUndefinedTimeLength(baseTimers[i].timeLength)
+                `${i + 1}. ${formTimers[i].timeName} starts ${
+                    formTimers[i].timeAfter
+                } ${minuteWording(formTimers[i].timeAfter)} after ${
+                    formTimers[i - 1].timeName
+                } and goes in for ${formTimers[i].timeLength} ${minuteWording(
+                    handleUndefinedTimeLength(formTimers[i].timeLength)
                 )}`
             );
         }
@@ -106,24 +106,34 @@ function generatePlainTextInstructions(baseTimers: Timer[] | undefined) {
     return elements;
 }
 
-const App: React.FC = () => {
+export function App() {
+    const [storedTimers, setStoredTimers] = useState<string | null>(
+        window.localStorage.getItem("timers")
+    );
+
+    const [instructions, setInstructions] = useState<JSX.Element[]>();
+    const [plainTextInstructions, setPlainTextInstructions] =
+        useState<string[]>();
+
+    useEffect(() => {
+        const timers = window.localStorage.getItem("timers");
+        if (timers) {
+            setPlainTextInstructions(
+                generatePlainTextInstructions(JSON.parse(timers))
+            );
+            setInstructions(generateHtmlInstructions(JSON.parse(timers)));
+        }
+    }, [storedTimers]);
+
     const emptyTimer = {
         timeName: "",
         timeLength: undefined,
         timeAfter: 0,
     };
     const initialValues: Values = {
-        timers: [emptyTimer],
+        timers: storedTimers ? JSON.parse(storedTimers) : [emptyTimer],
     };
-    const [baseTimers, setBaseTimers] = useState<Timer[]>();
-    const [instructions, setInstructions] = useState<JSX.Element[]>();
-    const [plainTextInstructions, setPlainTextInstructions] =
-        useState<string[]>();
-
-    useEffect(() => {
-        setInstructions(generateHtmlInstructions(baseTimers));
-        setPlainTextInstructions(generatePlainTextInstructions(baseTimers));
-    }, [baseTimers]);
+    console.log({ storedTimers });
 
     const handleSubmit = useCallback((values: Values) => {
         const formattedTimers = values.timers
@@ -147,7 +157,9 @@ const App: React.FC = () => {
                 );
             }
         }
-        setBaseTimers(formattedTimers);
+
+        setStoredTimers(JSON.stringify(formattedTimers));
+        window.localStorage.setItem("timers", JSON.stringify(formattedTimers));
     }, []);
 
     return (
@@ -234,6 +246,4 @@ const App: React.FC = () => {
             <Contact />
         </>
     );
-};
-
-export default App;
+}
