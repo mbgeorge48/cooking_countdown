@@ -1,6 +1,17 @@
 import { fireEvent, render, waitFor } from "@testing-library/react";
 import { App } from "./App";
 
+const mockGetItem = jest.fn();
+const mockSetItem = jest.fn();
+const mockRemoveItem = jest.fn();
+Object.defineProperty(window, "localStorage", {
+    value: {
+        getItem: (...args: string[]) => mockGetItem(...args),
+        setItem: (...args: string[]) => mockSetItem(...args),
+        removeItem: (...args: string[]) => mockRemoveItem(...args),
+    },
+});
+
 describe("<App />", () => {
     test("renders the basic form", () => {
         const subject = render(<App />);

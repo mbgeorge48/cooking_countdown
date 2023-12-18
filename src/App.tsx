@@ -12,6 +12,12 @@ import {
     handleUndefinedTimeLength,
 } from "./utils";
 
+// TODO
+// Test the functions individually
+// Test the local storage stuff (mocks)
+// Need to mock the localstorage to make the test work correctly
+// Fix the formik test warnings
+
 export function App() {
     const [storedTimers, setStoredTimers] = useState<string | null>(
         window.localStorage.getItem("timers")
@@ -22,12 +28,11 @@ export function App() {
         useState<string[]>();
 
     useEffect(() => {
-        const timers = window.localStorage.getItem("timers");
-        if (timers) {
+        if (storedTimers) {
             setPlainTextInstructions(
-                generatePlainTextInstructions(JSON.parse(timers))
+                generatePlainTextInstructions(JSON.parse(storedTimers))
             );
-            setInstructions(generateHtmlInstructions(JSON.parse(timers)));
+            setInstructions(generateHtmlInstructions(JSON.parse(storedTimers)));
         }
     }, [storedTimers]);
 
@@ -39,7 +44,6 @@ export function App() {
     const initialValues: Values = {
         timers: storedTimers ? JSON.parse(storedTimers) : [emptyTimer],
     };
-    console.log({ storedTimers });
 
     const handleSubmit = useCallback((values: Values) => {
         const formattedTimers = values.timers
