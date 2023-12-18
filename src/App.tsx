@@ -12,12 +12,6 @@ import {
     handleUndefinedTimeLength,
 } from "./utils";
 
-// TODO
-// Test the functions individually
-// Test the local storage stuff (mocks)
-// Need to mock the localstorage to make the test work correctly
-// Fix the formik test warnings
-
 export function App() {
     const [storedTimers, setStoredTimers] = useState<string | null>(
         window.localStorage.getItem("timers")
