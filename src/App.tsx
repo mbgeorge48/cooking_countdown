@@ -66,6 +66,11 @@ export function App() {
         window.localStorage.setItem("timers", JSON.stringify(formattedTimers));
     }, []);
 
+    const handleReset = () => {
+        window.localStorage.removeItem("timers");
+        window.location.reload();
+    };
+
     return (
         <>
             <div className="wrapper">
@@ -75,7 +80,7 @@ export function App() {
                         initialValues={initialValues}
                         onSubmit={handleSubmit}
                     >
-                        {({ values }) => (
+                        {({ values, dirty }) => (
                             <main>
                                 <Form>
                                     <FieldArray name="timers">
@@ -127,11 +132,20 @@ export function App() {
                                                     Add Timer
                                                 </button>
                                                 <button
-                                                    className="item"
                                                     type="submit"
+                                                    className="item"
                                                 >
                                                     Go!
                                                 </button>
+                                                {(dirty || storedTimers) && (
+                                                    <button
+                                                        type="button"
+                                                        className="item"
+                                                        onClick={handleReset}
+                                                    >
+                                                        Reset timers
+                                                    </button>
+                                                )}
                                             </div>
                                         )}
                                     </FieldArray>
