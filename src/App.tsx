@@ -117,5 +117,3 @@ export function App() {
         </>
     );
 }
-
-// Maybe a mini border between form rows

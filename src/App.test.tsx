@@ -34,8 +34,6 @@ describe("<App />", () => {
         expect(subject.getAllByRole("textbox")).toHaveLength(1);
         expect(subject.getAllByRole("spinbutton")).toHaveLength(1);
 
-        // fireEvent.click(subject.getByText(/add timer/i));
-        // // Use act when interacting with your component
         await act(async () => {
             fireEvent.click(subject.getByText(/add timer/i));
         });
