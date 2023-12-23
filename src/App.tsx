@@ -31,10 +31,16 @@ export function App() {
 
     const handleSubmit = useCallback((values: Values) => {
         const formattedTimers = formatTimers(values.timers);
-        setTimerData(formattedTimers);
-        setStoredTimers(JSON.stringify(formattedTimers));
-        window.localStorage.setItem("timers", JSON.stringify(formattedTimers));
-        instructionsRef.current?.scrollIntoView();
+
+        if (formattedTimers.length > 0) {
+            setTimerData(formattedTimers);
+            setStoredTimers(JSON.stringify(formattedTimers));
+            window.localStorage.setItem(
+                "timers",
+                JSON.stringify(formattedTimers)
+            );
+            instructionsRef.current?.scrollIntoView();
+        }
     }, []);
 
     const handleReset = () => {
