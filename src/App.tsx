@@ -1,154 +1,46 @@
-import React, { useCallback, useEffect, useState } from "react";
-import { Formik, Form, FieldArray, ArrayHelpers } from "formik";
-import { FoodItemField } from "./FoodItemField";
-import { CookingTimeField } from "./CookingTimeField";
+import { ArrayHelpers, FieldArray, Form, Formik } from "formik";
+import { useCallback, useRef, useState } from "react";
+
+import { AdvancedMode } from "./AdvancedMode";
+import { Contact } from "./Contact";
 import { Heading } from "./Heading";
 import { Instructions } from "./Instructions";
-import { Contact } from "./Contact";
+import { TimerRow } from "./TimerRow";
+import { Timer, Values } from "./types";
+import { formatTimers } from "./utils";
 
-interface Timer {
-    timeName: string;
-    timeLength: number | undefined;
-    timeAfter: number;
-}
-interface Values {
-    timers: Timer[];
-}
+export function App() {
+    const instructionsRef = useRef<HTMLButtonElement>(null);
+    const [storedTimers, setStoredTimers] = useState<string | null>(
+        window.localStorage.getItem("timers")
+    );
 
-function handleUndefinedTimeLength(number: number | undefined) {
-    if (number) {
-        return number;
-    }
-    return 0;
-}
+    const [timerData, setTimerData] = useState<Timer[] | null>(
+        storedTimers && JSON.parse(storedTimers)
+    );
+    const advancedMode = window.location.pathname.toLowerCase() === "/advanced";
 
-function minuteWording(number: number) {
-    return "minute".concat(number > 1 ? "s" : "");
-}
-
-function generateHtmlInstructions(baseTimers: Timer[] | undefined) {
-    if (!baseTimers || !baseTimers[0]) {
-        return undefined;
-    }
-
-    const elements = [
-        <span className="instruction" key={0}>
-            <strong>{baseTimers[0].timeName}</strong> goes in first for{" "}
-            <strong>
-                {baseTimers[0].timeLength}{" "}
-                {minuteWording(
-                    handleUndefinedTimeLength(baseTimers[0].timeLength)
-                )}
-            </strong>
-        </span>,
-    ];
-    for (let i = 1; i < baseTimers.length; i++) {
-        if (baseTimers[i].timeAfter === 0) {
-            elements.push(
-                <span className="instruction" key={i}>
-                    <strong>{baseTimers[i].timeName}</strong> starts at the{" "}
-                    <strong>same time</strong> as{" "}
-                    <strong>{baseTimers[i - 1].timeName}</strong>
-                </span>
-            );
-        } else {
-            elements.push(
-                <span className="instruction" key={i}>
-                    <strong>{baseTimers[i].timeName}</strong> starts{" "}
-                    <strong>
-                        {baseTimers[i].timeAfter}{" "}
-                        {minuteWording(baseTimers[i].timeAfter)}
-                    </strong>{" "}
-                    after {baseTimers[i - 1].timeName} and goes in for{" "}
-                    <strong>
-                        {baseTimers[i].timeLength}{" "}
-                        {minuteWording(
-                            handleUndefinedTimeLength(baseTimers[i].timeLength)
-                        )}
-                    </strong>
-                </span>
-            );
-        }
-    }
-    return elements;
-}
-function generatePlainTextInstructions(baseTimers: Timer[] | undefined) {
-    if (!baseTimers || !baseTimers[0]) {
-        return undefined;
-    }
-
-    const elements = [
-        `1. ${baseTimers[0].timeName} goes in first for ${
-            baseTimers[0].timeLength
-        } ${minuteWording(
-            handleUndefinedTimeLength(baseTimers[0].timeLength)
-        )}`,
-    ];
-    for (let i = 1; i < baseTimers.length; i++) {
-        if (baseTimers[i].timeAfter === 0) {
-            elements.push(
-                `${i + 1}. ${
-                    baseTimers[i].timeName
-                } starts at the same time as ${baseTimers[i - 1].timeName}`
-            );
-        } else {
-            elements.push(
-                `${i + 1}. ${baseTimers[i].timeName} starts ${
-                    baseTimers[i].timeAfter
-                } ${minuteWording(baseTimers[i].timeAfter)} after ${
-                    baseTimers[i - 1].timeName
-                } and goes in for ${baseTimers[i].timeLength} ${minuteWording(
-                    handleUndefinedTimeLength(baseTimers[i].timeLength)
-                )}`
-            );
-        }
-    }
-    return elements;
-}
-
-const App: React.FC = () => {
     const emptyTimer = {
         timeName: "",
-        timeLength: undefined,
+        timeLength: "",
         timeAfter: 0,
     };
     const initialValues: Values = {
-        timers: [emptyTimer],
+        timers: storedTimers ? JSON.parse(storedTimers) : [emptyTimer],
     };
-    const [baseTimers, setBaseTimers] = useState<Timer[]>();
-    const [instructions, setInstructions] = useState<JSX.Element[]>();
-    const [plainTextInstructions, setPlainTextInstructions] =
-        useState<string[]>();
-
-    useEffect(() => {
-        setInstructions(generateHtmlInstructions(baseTimers));
-        setPlainTextInstructions(generatePlainTextInstructions(baseTimers));
-    }, [baseTimers]);
 
     const handleSubmit = useCallback((values: Values) => {
-        const formattedTimers = values.timers
-            .slice()
-            .filter((timer) => handleUndefinedTimeLength(timer.timeLength) > 0)
-            .filter((timer) => timer.timeName)
-            .sort(function (a, b) {
-                return (
-                    handleUndefinedTimeLength(a.timeLength) -
-                    handleUndefinedTimeLength(b.timeLength)
-                );
-            })
-            .reverse();
-        if (formattedTimers.length > 1) {
-            for (let i = 1; i < formattedTimers.length; i++) {
-                formattedTimers[i].timeAfter = Math.abs(
-                    handleUndefinedTimeLength(formattedTimers[i].timeLength) -
-                        handleUndefinedTimeLength(
-                            formattedTimers[i - 1].timeLength
-                        )
-                );
-            }
-        }
-        setBaseTimers(formattedTimers);
+        const formattedTimers = formatTimers(values.timers);
+        setTimerData(formattedTimers);
+        setStoredTimers(JSON.stringify(formattedTimers));
+        window.localStorage.setItem("timers", JSON.stringify(formattedTimers));
+        instructionsRef.current?.scrollIntoView();
     }, []);
+
+    const handleReset = () => {
+        window.localStorage.removeItem("timers");
+        window.location.reload();
+    };
 
     return (
         <>
@@ -159,7 +51,7 @@ const App: React.FC = () => {
                         initialValues={initialValues}
                         onSubmit={handleSubmit}
                     >
-                        {({ values }) => (
+                        {({ values, dirty }) => (
                             <main>
                                 <Form>
                                     <FieldArray name="timers">
@@ -168,37 +60,13 @@ const App: React.FC = () => {
                                                 {values.timers.length > 0 &&
                                                     values.timers.map(
                                                         (timer, index) => (
-                                                            <div
-                                                                className="grid"
+                                                            <TimerRow
                                                                 key={index}
-                                                            >
-                                                                <FoodItemField
-                                                                    index={
-                                                                        index
-                                                                    }
-                                                                />
-                                                                <CookingTimeField
-                                                                    index={
-                                                                        index
-                                                                    }
-                                                                />
-                                                                <button
-                                                                    className={`clear-button${
-                                                                        index ===
-                                                                        0
-                                                                            ? " initial-clear-button"
-                                                                            : ""
-                                                                    }`}
-                                                                    type="button"
-                                                                    onClick={() =>
-                                                                        remove(
-                                                                            index
-                                                                        )
-                                                                    }
-                                                                >
-                                                                    Clear
-                                                                </button>
-                                                            </div>
+                                                                index={index}
+                                                                removeTimer={
+                                                                    remove
+                                                                }
+                                                            />
                                                         )
                                                     )}
                                                 <button
@@ -211,11 +79,20 @@ const App: React.FC = () => {
                                                     Add Timer
                                                 </button>
                                                 <button
-                                                    className="item"
                                                     type="submit"
+                                                    className="item"
                                                 >
                                                     Go!
                                                 </button>
+                                                {(dirty || storedTimers) && (
+                                                    <button
+                                                        type="button"
+                                                        className="item"
+                                                        onClick={handleReset}
+                                                    >
+                                                        Reset timers
+                                                    </button>
+                                                )}
                                             </div>
                                         )}
                                     </FieldArray>
@@ -224,16 +101,19 @@ const App: React.FC = () => {
                         )}
                     </Formik>
                 </div>
-                {instructions && plainTextInstructions && (
-                    <Instructions
-                        instructions={instructions}
-                        plainTextInstructions={plainTextInstructions}
-                    />
+                {timerData && (
+                    <div>
+                        <Instructions
+                            timerData={timerData}
+                            buttonRef={instructionsRef}
+                        />
+                        {advancedMode && timerData && (
+                            <AdvancedMode timerData={timerData} />
+                        )}
+                    </div>
                 )}
             </div>
             <Contact />
         </>
     );
-};
-
-export default App;
+}

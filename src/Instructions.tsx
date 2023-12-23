@@ -1,12 +1,21 @@
 import { useCallback, useState } from "react";
 
+import { Timer } from "./types";
+import {
+    generateHtmlInstructions,
+    generatePlainTextInstructions,
+} from "./utils";
+
 interface Props {
-    instructions: JSX.Element[];
-    plainTextInstructions: string[];
+    timerData: Timer[];
+    buttonRef: React.RefObject<HTMLButtonElement>;
 }
 
 export const Instructions = (props: Props) => {
-    const { instructions, plainTextInstructions } = props;
+    const plainTextInstructions = generatePlainTextInstructions(
+        props.timerData
+    );
+    const htmlInstructions = generateHtmlInstructions(props.timerData);
 
     const copyClipboardWordingDefault = "Copy to Clipboard";
     const [copyClipboardWording, setCopyClipboardWording] = useState<string>(
@@ -33,7 +42,7 @@ export const Instructions = (props: Props) => {
     return (
         <footer className="container border">
             <ol type="1">
-                {instructions.map((instruction, index) => (
+                {htmlInstructions?.map((instruction, index) => (
                     <li key={index}>{instruction}</li>
                 ))}
             </ol>
@@ -41,6 +50,7 @@ export const Instructions = (props: Props) => {
                 type="button"
                 className="item"
                 onClick={handleCopyInstructions}
+                ref={props.buttonRef}
             >
                 {copyClipboardWording}
             </button>
