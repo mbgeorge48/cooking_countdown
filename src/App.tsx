@@ -1,25 +1,26 @@
 import { ArrayHelpers, FieldArray, Form, Formik } from "formik";
 import { useCallback, useEffect, useState } from "react";
+
 import { Contact } from "./Contact";
-import { CookingTimeField } from "./CookingTimeField";
-import { FoodItemField } from "./FoodItemField";
 import { Heading } from "./Heading";
 import { Instructions } from "./Instructions";
+import { TimerRow } from "./TimerRow";
 import { Values } from "./types";
 import {
+    formatTimers,
     generateHtmlInstructions,
     generatePlainTextInstructions,
-    handleUndefinedTimeLength,
 } from "./utils";
 
 export function App() {
     const [storedTimers, setStoredTimers] = useState<string | null>(
         window.localStorage.getItem("timers")
     );
-
     const [instructions, setInstructions] = useState<JSX.Element[]>();
     const [plainTextInstructions, setPlainTextInstructions] =
         useState<string[]>();
+
+    const advancedMode = window.location.search.toLowerCase() === "advanced";
 
     useEffect(() => {
         if (storedTimers) {
@@ -40,27 +41,7 @@ export function App() {
     };
 
     const handleSubmit = useCallback((values: Values) => {
-        const formattedTimers = values.timers
-            .slice()
-            .filter((timer) => handleUndefinedTimeLength(timer.timeLength) > 0)
-            .filter((timer) => timer.timeName)
-            .sort(function (a, b) {
-                return (
-                    handleUndefinedTimeLength(a.timeLength) -
-                    handleUndefinedTimeLength(b.timeLength)
-                );
-            })
-            .reverse();
-        if (formattedTimers.length > 1) {
-            for (let i = 1; i < formattedTimers.length; i++) {
-                formattedTimers[i].timeAfter = Math.abs(
-                    handleUndefinedTimeLength(formattedTimers[i].timeLength) -
-                        handleUndefinedTimeLength(
-                            formattedTimers[i - 1].timeLength
-                        )
-                );
-            }
-        }
+        const formattedTimers = formatTimers(values.timers);
 
         setStoredTimers(JSON.stringify(formattedTimers));
         window.localStorage.setItem("timers", JSON.stringify(formattedTimers));
@@ -89,37 +70,13 @@ export function App() {
                                                 {values.timers.length > 0 &&
                                                     values.timers.map(
                                                         (timer, index) => (
-                                                            <div
-                                                                className="grid"
+                                                            <TimerRow
                                                                 key={index}
-                                                            >
-                                                                <FoodItemField
-                                                                    index={
-                                                                        index
-                                                                    }
-                                                                />
-                                                                <CookingTimeField
-                                                                    index={
-                                                                        index
-                                                                    }
-                                                                />
-                                                                <button
-                                                                    className={`clear-button${
-                                                                        index ===
-                                                                        0
-                                                                            ? " initial-clear-button"
-                                                                            : ""
-                                                                    }`}
-                                                                    type="button"
-                                                                    onClick={() =>
-                                                                        remove(
-                                                                            index
-                                                                        )
-                                                                    }
-                                                                >
-                                                                    Clear
-                                                                </button>
-                                                            </div>
+                                                                index={index}
+                                                                removeTimer={
+                                                                    remove
+                                                                }
+                                                            />
                                                         )
                                                     )}
                                                 <button
@@ -155,10 +112,13 @@ export function App() {
                     </Formik>
                 </div>
                 {instructions && plainTextInstructions && (
-                    <Instructions
-                        instructions={instructions}
-                        plainTextInstructions={plainTextInstructions}
-                    />
+                    <>
+                        <Instructions
+                            instructions={instructions}
+                            plainTextInstructions={plainTextInstructions}
+                        />
+                        {advancedMode && <div />}
+                    </>
                 )}
             </div>
             <Contact />
