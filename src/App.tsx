@@ -1,6 +1,5 @@
-import { time } from "console";
 import { ArrayHelpers, FieldArray, Form, Formik } from "formik";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 
 import { AdvancedMode } from "./AdvancedMode";
 import { Contact } from "./Contact";
