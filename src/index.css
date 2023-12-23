@@ -6,6 +6,10 @@
     --text: #2f4858;
 }
 
+html {
+    scroll-behavior: smooth;
+}
+
 body {
     margin: 0;
     font-family: "Noto Sans";
