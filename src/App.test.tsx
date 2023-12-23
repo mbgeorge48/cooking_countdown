@@ -1,4 +1,6 @@
-import { fireEvent, render, waitFor } from "@testing-library/react";
+import { act, fireEvent, render, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+
 import { App } from "./App";
 
 const mockGetItem = jest.fn();
@@ -33,7 +35,11 @@ describe("<App />", () => {
         expect(subject.getAllByRole("textbox")).toHaveLength(1);
         expect(subject.getAllByRole("spinbutton")).toHaveLength(1);
 
-        fireEvent.click(subject.getByText(/add timer/i));
+        // fireEvent.click(subject.getByText(/add timer/i));
+        // // Use act when interacting with your component
+        await act(async () => {
+            fireEvent.click(subject.getByText(/add timer/i));
+        });
 
         await waitFor(() => {
             expect(subject.getAllByRole("textbox")).toHaveLength(2);
@@ -44,13 +50,17 @@ describe("<App />", () => {
     test("removes fields when button is pressed", async () => {
         const subject = render(<App />);
 
-        fireEvent.click(subject.getByText(/add timer/i));
+        await act(async () => {
+            fireEvent.click(subject.getByText(/add timer/i));
+        });
         await waitFor(() => {
             expect(subject.getAllByRole("textbox")).toHaveLength(2);
         });
         expect(subject.getAllByRole("spinbutton")).toHaveLength(2);
 
-        fireEvent.click(subject.getAllByText(/clear/i)[1]);
+        await act(async () => {
+            fireEvent.click(subject.getAllByText(/clear/i)[1]);
+        });
         await waitFor(() => {
             expect(subject.getAllByRole("textbox")).toHaveLength(1);
         });
@@ -60,8 +70,13 @@ describe("<App />", () => {
     test("renders the instructions when go is pressed", async () => {
         const subject = render(<App />);
 
-        fireEvent.click(subject.getByText(/add timer/i));
-        fireEvent.click(subject.getByText(/add timer/i));
+        await act(async () => {
+            fireEvent.click(subject.getByText(/add timer/i));
+        });
+
+        await act(async () => {
+            fireEvent.click(subject.getByText(/add timer/i));
+        });
         await waitFor(() => {
             expect(subject.getAllByRole("textbox")).toHaveLength(3);
         });
@@ -73,9 +88,8 @@ describe("<App />", () => {
         fireEvent.change(timerNameFields[0], { target: { value: "Food A" } });
         fireEvent.change(timerNameFields[1], { target: { value: "Food B" } });
         fireEvent.change(timerNameFields[2], { target: { value: "Food C" } });
-        await waitFor(() => {
-            fireEvent.change(timerLengthFields[0], { target: { value: 10 } });
-        });
+
+        fireEvent.change(timerLengthFields[0], { target: { value: 10 } });
         fireEvent.change(timerLengthFields[1], { target: { value: 8 } });
         fireEvent.change(timerLengthFields[2], { target: { value: 5 } });
 

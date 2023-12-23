@@ -33,7 +33,7 @@ export function App() {
 
     const emptyTimer = {
         timeName: "",
-        timeLength: undefined,
+        timeLength: "",
         timeAfter: 0,
     };
     const initialValues: Values = {
