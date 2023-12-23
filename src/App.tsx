@@ -1,35 +1,25 @@
+import { time } from "console";
 import { ArrayHelpers, FieldArray, Form, Formik } from "formik";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
+import { AdvancedMode } from "./AdvancedMode";
 import { Contact } from "./Contact";
 import { Heading } from "./Heading";
 import { Instructions } from "./Instructions";
 import { TimerRow } from "./TimerRow";
-import { Values } from "./types";
-import {
-    formatTimers,
-    generateHtmlInstructions,
-    generatePlainTextInstructions,
-} from "./utils";
+import { Timer, Values } from "./types";
+import { formatTimers } from "./utils";
 
 export function App() {
+    const instructionsRef = useRef<HTMLButtonElement>(null);
     const [storedTimers, setStoredTimers] = useState<string | null>(
         window.localStorage.getItem("timers")
     );
-    const [instructions, setInstructions] = useState<JSX.Element[]>();
-    const [plainTextInstructions, setPlainTextInstructions] =
-        useState<string[]>();
 
-    const advancedMode = window.location.search.toLowerCase() === "advanced";
-
-    useEffect(() => {
-        if (storedTimers) {
-            setPlainTextInstructions(
-                generatePlainTextInstructions(JSON.parse(storedTimers))
-            );
-            setInstructions(generateHtmlInstructions(JSON.parse(storedTimers)));
-        }
-    }, [storedTimers]);
+    const [timerData, setTimerData] = useState<Timer[] | null>(
+        storedTimers && JSON.parse(storedTimers)
+    );
+    const advancedMode = window.location.pathname.toLowerCase() === "/advanced";
 
     const emptyTimer = {
         timeName: "",
@@ -42,9 +32,10 @@ export function App() {
 
     const handleSubmit = useCallback((values: Values) => {
         const formattedTimers = formatTimers(values.timers);
-
+        setTimerData(formattedTimers);
         setStoredTimers(JSON.stringify(formattedTimers));
         window.localStorage.setItem("timers", JSON.stringify(formattedTimers));
+        instructionsRef.current?.scrollIntoView();
     }, []);
 
     const handleReset = () => {
@@ -111,17 +102,21 @@ export function App() {
                         )}
                     </Formik>
                 </div>
-                {instructions && plainTextInstructions && (
-                    <>
+                {timerData && (
+                    <div>
                         <Instructions
-                            instructions={instructions}
-                            plainTextInstructions={plainTextInstructions}
+                            timerData={timerData}
+                            buttonRef={instructionsRef}
                         />
-                        {advancedMode && <div />}
-                    </>
+                        {advancedMode && timerData && (
+                            <AdvancedMode timerData={timerData} />
+                        )}
+                    </div>
                 )}
             </div>
             <Contact />
         </>
     );
 }
+
+// Maybe a mini border between form rows
