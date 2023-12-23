@@ -90,3 +90,26 @@ export function generatePlainTextInstructions(formTimers: Timer[] | undefined) {
     }
     return elements;
 }
+
+export function formatTimers(timers: Timer[]) {
+    const formattedTimers = timers
+        .slice()
+        .filter((timer) => handleUndefinedTimeLength(timer.timeLength) > 0)
+        .filter((timer) => timer.timeName)
+        .sort(function (a, b) {
+            return (
+                handleUndefinedTimeLength(a.timeLength) -
+                handleUndefinedTimeLength(b.timeLength)
+            );
+        })
+        .reverse();
+    if (formattedTimers.length > 1) {
+        for (let i = 1; i < formattedTimers.length; i++) {
+            formattedTimers[i].timeAfter = Math.abs(
+                handleUndefinedTimeLength(formattedTimers[i].timeLength) -
+                    handleUndefinedTimeLength(formattedTimers[i - 1].timeLength)
+            );
+        }
+    }
+    return formattedTimers;
+}
